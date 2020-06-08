@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SushiContainer from './containers/SushiContainer';
 import Table from './containers/Table';
+import Wallet from './containers/Wallet'
 
 // Endpoint!
 const API = "http://localhost:3000/sushis"
@@ -32,9 +33,16 @@ class App extends Component {
   }
 
   nextSushiSet = () => {
-    this.setState(prevState => ({
-      nextSushi: prevState.nextSushi + 4
-    }))
+    let nextSetIdx = this.state.nextSushi + 4
+    if (nextSetIdx >= this.state.sushis.length) {
+      nextSetIdx = 0
+    }
+    // this.setState(prevState => ({
+    //   nextSushi: prevState.nextSushi + 4
+    // }))
+    this.setState({
+      nextSushi: nextSetIdx
+    })
   }
 
   eatSushi = (sushiId) => {
@@ -69,6 +77,14 @@ class App extends Component {
     })
   }
 
+  addToWallet = (amount) => {
+    console.log("add this", amount)
+    const newBudget = this.state.budget + amount
+    this.setState({
+      budget: newBudget
+    })
+  }
+
   nextSet = () => {return this.state.sushis.slice(this.state.nextSushi, this.state.nextSushi + 4)}
 
   render() {
@@ -77,6 +93,7 @@ class App extends Component {
       <div className="app">
         <SushiContainer sushis={this.nextSet()} nextSushiSet={this.nextSushiSet} eatSushi={this.eatSushi}/>
         <Table budget={this.state.budget} sushiEaten={this.state.sushiEatenList}/>
+        <Wallet addToWallet={this.addToWallet}/>
       </div>
     );
   }
