@@ -8,7 +8,6 @@ class Wallet extends Component {
   }
 
   onAddMoney = (e) => {
-    console.log(this.state, e.target.value)
     this.setState({
       money: parseInt(e.target.value)
     })

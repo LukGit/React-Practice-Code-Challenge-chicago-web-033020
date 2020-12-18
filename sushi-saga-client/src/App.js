@@ -12,8 +12,7 @@ class App extends Component {
     this.state = {
       sushis: [], 
       budget: 100,
-      nextSushi: 0,
-      sushiEatenList: []
+      nextSushi: 0
     }
   }
 
@@ -45,23 +44,19 @@ class App extends Component {
     })
   }
 
-  eatSushi = (sushiId) => {
-    const ateSushi = this.state.sushis.find(aSushi => aSushi.id === sushiId)
+  eatSushi = (sushiId, price) => {
     let newBudget = 0
     let canEate = true
-    if (ateSushi.price > this.state.budget){
+    if (price > this.state.budget){
       newBudget = this.state.budget
       canEate = false
     } else {
-      newBudget = this.state.budget - ateSushi.price
+      newBudget = this.state.budget - price
     }
-  
-    let myEaten = this.state.sushiEatenList
     
     let sList = this.state.sushis.map(sushi => {
       if (sushi.id === sushiId){
         if (canEate){
-          myEaten = [...myEaten, ateSushi]
           return {...sushi, eaten: true}
         } else {
           return sushi
@@ -72,27 +67,33 @@ class App extends Component {
     })
     this.setState({
       budget: newBudget,
-      sushis: sList,
-      sushiEatenList: myEaten
+      sushis: sList
     })
   }
 
   addToWallet = (amount) => {
-    console.log("add this", amount)
-    const newBudget = this.state.budget + amount
-    this.setState({
-      budget: newBudget
-    })
+    // console.log("add this", amount)
+    // const newBudget = this.state.budget + amount
+    // this.setState({
+    //   budget: newBudget
+    // })
+    this.setState(prevState => ({
+      budget: prevState.budget + amount
+    }))
   }
 
-  nextSet = () => {return this.state.sushis.slice(this.state.nextSushi, this.state.nextSushi + 4)}
-
+  nextSet = () => {
+    return this.state.sushis.slice(this.state.nextSushi, this.state.nextSushi + 4)
+  }
+  ateList = () => {
+    return this.state.sushis.filter(aSushi => aSushi.eaten)
+  }
   render() {
 
     return (
       <div className="app">
         <SushiContainer sushis={this.nextSet()} nextSushiSet={this.nextSushiSet} eatSushi={this.eatSushi}/>
-        <Table budget={this.state.budget} sushiEaten={this.state.sushiEatenList}/>
+        <Table budget={this.state.budget} sushiEaten={this.ateList()}/>
         <Wallet addToWallet={this.addToWallet}/>
       </div>
     );
